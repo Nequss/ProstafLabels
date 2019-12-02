@@ -1,0 +1,79 @@
+﻿<Window x:Class="ProstafLabels.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ProstafLabels"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    
+    <Grid >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <ListBox Name="databaseList" Margin="10" Grid.ColumnSpan="4"/>
+
+        <Grid Grid.Row="1" Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="8*"/>
+            </Grid.RowDefinitions>
+
+            <ListBox Name="sheetList" Margin="10" Grid.Row="2" Grid.Column="0"/>
+            <TextBlock Text="Choose Worksheet" Margin="0,7,0,0" TextAlignment="Center"/>
+        </Grid>
+
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Button Name="printButton" Margin="50,5,50,5" Grid.Row="0" Click="printButton_Click">
+                <TextBlock TextAlignment="Center" Text="Print"/>
+            </Button>
+            <Button Name="importSheetButton" Margin="50,5,50,5" Grid.Row="1" Click="importWorksheet_Click">
+                <TextBlock TextAlignment="Center" Text="Import Sheet"/>
+            </Button>
+            <Button Name="templateButton" Margin="50,5,50,5" Grid.Row="2" Click="templateButton_Click">
+                <TextBlock TextAlignment="Center" Text="Import template"/>
+            </Button>
+            <Button Name="fileButton" Margin="50,5,50,5" Grid.Row="4" Click="fileButton_Click">
+                <TextBlock TextAlignment="Center" Text="Import file"/>
+            </Button>
+        </Grid>
+
+        <Grid Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="8*"/>
+            </Grid.RowDefinitions>
+
+            <ListBox Name="logList" Margin="10"  Grid.Row="2" Grid.Column="0"/>
+            <TextBlock Text="Logs" Margin="0,7,0,0" TextAlignment="Center"/>
+        </Grid>
+    </Grid>
+</Window>
