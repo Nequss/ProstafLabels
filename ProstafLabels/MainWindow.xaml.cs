@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using Excel = Microsoft.Office.Interop.Excel;
@@ -21,10 +21,6 @@ namespace ProstafLabels
         private static Word.Application OriginalApp = null;
         private static Word.Document OriginalDoc = null;
 
-        private static Word.Application CopyApp = null;
-        private static Word.Document CopyDoc = null;
-
-
         List<string> array = new List<string>();
 
         public MainWindow()
@@ -34,42 +30,54 @@ namespace ProstafLabels
 
         private void importWorksheet_Click(object sender, RoutedEventArgs e)
         {
-            if (sheetList.SelectedItem != null)
-                for (int i = 1; i <= MyBook.Sheets.Count; i++)
-                    if (MyBook.Sheets[i].Name == sheetList.SelectedItem.ToString())
-                        for (int j = 1; j <= MyBook.Sheets[i].Cells.SpecialCells(Excel.XlCellType.xlCellTypeLastCell).Row; j++)
-                            databaseList.Items.Add(
-                                MyBook.Sheets[i].Cells[j, 1].value + "," +
-                                MyBook.Sheets[i].Cells[j, 2].value + "," +
-                                MyBook.Sheets[i].Cells[j, 3].value + "," +
-                                MyBook.Sheets[i].Cells[j, 4].value);
+            Thread importingsheets = new Thread(new ThreadStart(_importsheets));
+            importingsheets.Start();
+        }
+
+        public void _importsheets()
+        {
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                logList.Items.Add("Importing rows...");
+                if (sheetList.SelectedItem != null)
+                    for (int i = 1; i <= MyBook.Sheets.Count; i++)
+                        if (MyBook.Sheets[i].Name == sheetList.SelectedItem.ToString())
+                            for (int j = 1; j <= MyBook.Sheets[i].Cells.SpecialCells(Excel.XlCellType.xlCellTypeLastCell).Row; j++)
+                                databaseList.Items.Add(
+                                    MyBook.Sheets[i].Cells[j, 1].value + "," +
+                                    MyBook.Sheets[i].Cells[j, 2].value + "," +
+                                    MyBook.Sheets[i].Cells[j, 3].value + "," +
+                                    MyBook.Sheets[i].Cells[j, 4].value);
+            }));
         }
 
         private void printButton_Click(object sender, RoutedEventArgs e)
         {
+            int k = databaseList.Items.Count / 24;
             OriginalApp = new Word.Application()
             {
-                Visible = false
+                Visible = false,
+                DisplayAlerts = Word.WdAlertLevel.wdAlertsNone,
             };
 
-            for (int j = 0; j < 3; j++)
+            for (int j = 0; j < 2; j++)
             {
                 OriginalDoc = OriginalApp.Documents.Open(wordPath);
                 OriginalDoc.Activate();
 
-                for (int i = 0; i < 25; i++)
+                for (int i = 0; i < 24; i++)
                 {
                     array = databaseList.Items[i].ToString().Split(',').ToList();
                     databaseList.Items.Remove(databaseList.Items[i]);
 
-                    FindAndReplace(OriginalApp, "<name" + i + ">", array[0]);
-                    FindAndReplace(OriginalApp, "<address" + i + ">", array[1]);
-                    FindAndReplace(OriginalApp, "<postcode" + i + ">", array[2]);
-                    FindAndReplace(OriginalApp, "<city" + i + ">", array[3]);
+                    FindAndReplace(OriginalApp, "<name" + i + ">", array[0].ToUpper());
+                    FindAndReplace(OriginalApp, "<address" + i + ">", array[1].ToUpper());
+                    FindAndReplace(OriginalApp, "<postcode" + i + ">", array[2].ToUpper());
+                    FindAndReplace(OriginalApp, "<city" + i + ">", array[3].ToUpper());
                 }
 
                 array.Clear();
-                OriginalDoc.PrintOut();
+                OriginalDoc.PrintOut(Background:false);
                 OriginalDoc.Close(Word.WdSaveOptions.wdDoNotSaveChanges);
             }
         }
@@ -115,33 +123,49 @@ namespace ProstafLabels
             if (result == true)
             {
                 wordPath = dlg.FileName;
+                logList.Items.Add("Finished");
             }
+            else 
+                logList.Items.Add("Failed");
         }
 
         private void fileButton_Click(object sender, RoutedEventArgs e)
         {
-            logList.Items.Add("Importing excel file...");
-            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-
-            dlg.DefaultExt = ".xlsx";
-            dlg.Filter = "ExcelNames|*.xlsx";
-
-            Nullable<bool> result = dlg.ShowDialog();
-
-            if (result == true)
-            {
-                excelPath = dlg.FileName;
-
-                MyApp = new Excel.Application
-                {
-                    Visible = false
-                };
-
-                MyBook = MyApp.Workbooks.Open(excelPath);
-
-                for (int i = 1; i <= MyBook.Sheets.Count; i++)
-                    sheetList.Items.Add(MyBook.Sheets[i].Name);
-            }
+            Thread importingData = new Thread(new ThreadStart(_importingData));
+            importingData.Start();
         } 
+
+        public void _importingData()
+        {
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                logList.Items.Add("Importing excel file...");
+                Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+
+                dlg.DefaultExt = ".xlsx";
+                dlg.Filter = "ExcelNames|*.xlsx";
+
+                Nullable<bool> result = dlg.ShowDialog();
+
+                if (result == true)
+                {
+                    excelPath = dlg.FileName;
+
+                    MyApp = new Excel.Application
+                    {
+                        Visible = false
+                    };
+
+                    MyBook = MyApp.Workbooks.Open(excelPath);
+
+                    for (int i = 1; i <= MyBook.Sheets.Count; i++)
+                        sheetList.Items.Add(MyBook.Sheets[i].Name);
+
+                    logList.Items.Add("Finished");
+                }
+                else
+                    logList.Items.Add("Failed");
+            }));
+        }
     }
 }
