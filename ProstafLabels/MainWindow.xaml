@@ -53,12 +53,12 @@
                 <TextBlock TextAlignment="Center" Text="Print"/>
             </Button>
             <Button Name="importSheetButton" Margin="50,5,50,5" Grid.Row="1" Click="importWorksheet_Click">
-                <TextBlock TextAlignment="Center" Text="Import Sheet"/>
+                <TextBlock TextAlignment="Center" Text="Import sheet"/>
             </Button>
             <Button Name="templateButton" Margin="50,5,50,5" Grid.Row="2" Click="templateButton_Click">
                 <TextBlock TextAlignment="Center" Text="Import template"/>
             </Button>
-            <Button Name="fileButton" Margin="50,5,50,5" Grid.Row="4" Click="fileButton_Click">
+            <Button Name="fileButton" Margin="50,5,50,5" Grid.Row="3" Click="fileButton_Click">
                 <TextBlock TextAlignment="Center" Text="Import file"/>
             </Button>
         </Grid>

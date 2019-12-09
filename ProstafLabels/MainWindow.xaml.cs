@@ -60,20 +60,27 @@ namespace ProstafLabels
                 DisplayAlerts = Word.WdAlertLevel.wdAlertsNone,
             };
 
-            for (int j = 0; j < 2; j++)
+            for (int j = 0; j < k + 1; j++)
             {
                 OriginalDoc = OriginalApp.Documents.Open(wordPath);
                 OriginalDoc.Activate();
 
-                for (int i = 0; i < 24; i++)
+                for (int i = 23; i >= 0 ; i--)
                 {
-                    array = databaseList.Items[i].ToString().Split(',').ToList();
-                    databaseList.Items.Remove(databaseList.Items[i]);
+                    try
+                    {
+                        array = databaseList.Items[i].ToString().Split(',').ToList();
+                        databaseList.Items.Remove(databaseList.Items[i]);
 
-                    FindAndReplace(OriginalApp, "<name" + i + ">", array[0].ToUpper());
-                    FindAndReplace(OriginalApp, "<address" + i + ">", array[1].ToUpper());
-                    FindAndReplace(OriginalApp, "<postcode" + i + ">", array[2].ToUpper());
-                    FindAndReplace(OriginalApp, "<city" + i + ">", array[3].ToUpper());
+                        FindAndReplace(OriginalApp, "<name" + i + ">", array[0].ToUpper());
+                        FindAndReplace(OriginalApp, "<address" + i + ">", array[1].ToUpper());
+                        FindAndReplace(OriginalApp, "<postcode" + i + ">", array[2].ToUpper());
+                        FindAndReplace(OriginalApp, "<city" + i + ">", array[3].ToUpper());
+                    }
+                    catch(Exception ex)
+                    {
+
+                    }
                 }
 
                 array.Clear();
