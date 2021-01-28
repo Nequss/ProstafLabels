@@ -72,7 +72,7 @@ namespace ProstafLabels
                         array = databaseList.Items[i].ToString().Split(',').ToList();
                         databaseList.Items.Remove(databaseList.Items[i]);
 
-                        FindAndReplace(OriginalApp, "<name" + i + ">", array[0].ToUpper());
+                        FindAndReplace(OriginalApp, "<name" + i + ">", array[0].ToUpper().Length < 30 ? array[0].ToUpper() : "APTEKA");
                         FindAndReplace(OriginalApp, "<address" + i + ">", array[1].ToUpper());
                         FindAndReplace(OriginalApp, "<postcode" + i + ">", array[2].ToUpper());
                         FindAndReplace(OriginalApp, "<city" + i + ">", array[3].ToUpper());
